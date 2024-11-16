@@ -2,6 +2,8 @@
 
 echo -e "\nCreating ssh key pair.\n"
 
+mkdir -p ./butane
+
 SSHKEY_NAME="$1"
 
 if [ ! -f ~/.ssh/$SSHKEY_NAME ]
@@ -11,5 +13,5 @@ fi
 
 if [ ! -f ./${SSHKEY_NAME}.pub ]
 then
-	cp --update ~/.ssh/${SSHKEY_NAME}.pub ./
+	cp --update ~/.ssh/${SSHKEY_NAME}.pub ./butane/
 fi
