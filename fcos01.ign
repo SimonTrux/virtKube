@@ -1,0 +1,19 @@
+{
+  "ignition": {
+    "version": "3.4.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "groups": [
+          "wheel"
+        ],
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID0zxt5kKOOWkPI27lyaM5vSQqkWo2LCMRcj47FGVLGs fcos01"
+        ],
+        "shell": "/bin/bash"
+      }
+    ]
+  }
+}
