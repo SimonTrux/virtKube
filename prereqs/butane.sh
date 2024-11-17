@@ -6,34 +6,57 @@
 #              --volume ${PWD}:/pwd --workdir /pwd \
 #              quay.io/coreos/butane:release'
 
-echo "Creating butane director."
-mkdir -p ./butane
+vm_list="$1"
+sshkey_list="$2"
+butane_dir="$3"
+# == ./butane
 
-echo "Creating all VMs files butane/$1.bu"
+# turning sshkey_list into an array
+sshkey_array=()
+for key in ${sshkey_list}
+do
+  sshkey_array+=("${key}")
+done
 
-cat << EOF > ./butane/$1.bu
+
+mkdir -p ${butane_dir}
+
+
+for vm in ${vm_list}
+do
+
+echo "Creating all VMs files butane/${vm}.bu"
+
+cat << EOF > ./butane/${vm}.bu
 variant: fcos
 version: 1.5.0
 passwd:
   users:
     - name: core
       ssh_authorized_keys_local:
-        - $1.pub
+        - ${sshkey_array[0]}.pub
       groups:
         - wheel
+      shell: /bin/bash
+    - name: kube
+      ssh_authorized_keys_local:
+        - ${sshkey_array[1]}.pub
       shell: /bin/bash
 storage:
   files:
     - path: /etc/hostname
       mode: 0644
       contents:
-        inline: $1
+        inline: ${vm}
 EOF
 
-echo "Converting into butane/$1.ign"
+echo "Converting into ${butane_dir}/${vm}.ign"
 
 podman run --rm --interactive       \
 --security-opt label=disable        \
 --volume ${PWD}:/pwd --workdir /pwd \
 quay.io/coreos/butane:release \
---pretty --strict -d ./butane butane/$1.bu --output butane/$1.ign
+--pretty --strict -d ${butane_dir} ${butane_dir}/${vm}.bu --output ${butane_dir}/${vm}.ign
+
+done
+

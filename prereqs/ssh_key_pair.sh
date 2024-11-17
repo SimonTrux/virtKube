@@ -1,17 +1,34 @@
 #!/bin/bash
 
-echo -e "\nCreating ssh key pair.\n"
 
-mkdir -p ./butane
 
-SSHKEY_NAME="$1"
+sshkey_list="$1"
+sskkey_pub_dir="$2"
+# == "./butane"
 
-if [ ! -f ~/.ssh/$SSHKEY_NAME ]
-then
-	ssh-keygen -t ed25519 -C "${SSHKEY_NAME}" -f ~/.ssh/${SSHKEY_NAME} -N "" -q
-fi
+mkdir -p ${sskkey_pub_dir}
 
-if [ ! -f ./${SSHKEY_NAME}.pub ]
-then
-	cp --update ~/.ssh/${SSHKEY_NAME}.pub ./butane/
-fi
+echo
+
+for key in ${sshkey_list}
+do
+
+  if [ ! -f ~/.ssh/${key} ]
+  then
+    echo "Creating ssh key pair : ${key}"
+  	ssh-keygen -t ed25519 -C "${key}" -f ~/.ssh/${key} -N "" -q
+  else
+    echo "-> Key pair ~/.ssh/${key} exists already."
+  fi
+
+  if [ ! -f ${sskkey_pub_dir}/${key}.pub ]
+  then
+    echo "Copying public key to ${sskkey_pub_dir}/${key}"
+  	cp --update ~/.ssh/${key}.pub ${sskkey_pub_dir}/
+  else
+    echo "-> Public key already present : ${sskkey_pub_dir}/${key}.pub"
+  fi
+
+done
+
+echo
