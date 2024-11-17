@@ -9,7 +9,8 @@
 echo "Creating butane director."
 mkdir -p ./butane
 
-echo "Creating butane/$1.bu"
+echo "Creating all VMs files butane/$1.bu"
+
 cat << EOF > ./butane/$1.bu
 variant: fcos
 version: 1.5.0
@@ -29,7 +30,7 @@ storage:
         inline: $1
 EOF
 
-echo "Creating butane/$1.ign"
+echo "Converting into butane/$1.ign"
 
 podman run --rm --interactive       \
 --security-opt label=disable        \

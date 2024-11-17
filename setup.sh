@@ -3,8 +3,8 @@
 # Import vm_list var
 source ./vm_list.sh
 
-#prereqs/packages.sh
-#prereqs/os_image.sh
+prereqs/packages.sh
+prereqs/os_image.sh
 
 for vm in $vm_list
 do
