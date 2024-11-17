@@ -1,25 +1,30 @@
 #!/bin/bash
 
-IGNITION_CONFIG="$1.ign"
-#IMAGE="${HOME}/.local/share/libvirt/images/fedora-coreos-41.20241027.3.0-qemu.x86_64.qcow2"
-IMAGE="os_img/fedora-coreos-41.20241027.3.0-qemu.x86_64.qcow2"
+IGNITION_CONFIG="${PWD}/butane/$1.ign"
+IMAGE="${HOME}/.local/share/libvirt/images/fedora-coreos-41.20241027.3.0-qemu.x86_64.qcow2"
 
 VM_NAME="$1"
 VCPUS="2"
 RAM_MB="2048"
 STREAM="stable"
 DISK_GB="10"
+
 # For x86 / aarch64,
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 
 # For s390x / ppc64le,
 #IGNITION_DEVICE_ARG=(--disk path="${IGNITION_CONFIG}",format=raw,readonly=on,serial=ignition,startup_policy=optional)
 
+# Correct qemu perms
+sudo chown qemu: $IGNITION_CONFIG
+sudo chown qemu: $IMAGE
+
 # Setup the correct SELinux label to allow access to the config
 sudo chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
 
-sudo virt-install --connect="qemu:///system" --name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
+virt-install --connect="qemu:///system" --name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
         --os-variant="fedora-coreos-$STREAM" --import --graphics=none \
         --disk="size=${DISK_GB},backing_store=${IMAGE}" \
-        --network bridge=virbr0 "${IGNITION_DEVICE_ARG[@]} -d"
+        --network bridge=virbr0 "${IGNITION_DEVICE_ARG[@]}" &
+
 

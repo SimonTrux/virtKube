@@ -6,8 +6,10 @@
 #              --volume ${PWD}:/pwd --workdir /pwd \
 #              quay.io/coreos/butane:release'
 
+echo "Creating butane director."
 mkdir -p ./butane
 
+echo "Creating butane/$1.bu"
 cat << EOF > ./butane/$1.bu
 variant: fcos
 version: 1.5.0
@@ -19,7 +21,15 @@ passwd:
       groups:
         - wheel
       shell: /bin/bash
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: $1
 EOF
+
+echo "Creating butane/$1.ign"
 
 podman run --rm --interactive       \
 --security-opt label=disable        \

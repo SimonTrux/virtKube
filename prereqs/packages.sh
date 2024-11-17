@@ -4,3 +4,4 @@
 echo "installing prerequisites packages"
 sudo dnf install -y @virtualization
 sudo dnf install -y qemu
+
