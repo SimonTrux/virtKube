@@ -1,0 +1,7 @@
+FROM alpine:3.20
+
+RUN apk update && apk upgrade
+
+RUN apk add --no-cache \
+  python3~=3.12.7 \
+  ansible~=9.5.1

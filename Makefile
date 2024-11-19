@@ -3,6 +3,9 @@ vm_list := "fcos01"
 sshkey_list := "core_key kube_key"
 work_dir := "./butane"
 
+# Tools
+ansible_img := "ansible_pod:9.5.1"
+
 ## All section
 all: prereqs install status
 
@@ -21,6 +24,12 @@ keys:
 
 butane: keys
 	./prereqs/butane.sh ${vm_list} ${work_dir}
+
+build-ansible:
+	./prereqs/podsible/build.sh ${ansible_img}
+
+ansible: build-ansible
+	./prereqs/podsible/run.sh ${ansible_img}
 
 
 ## INSTALL SECTION
