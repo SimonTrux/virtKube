@@ -20,16 +20,12 @@ do
   # For s390x / ppc64le,
   #IGNITION_DEVICE_ARG=(--disk path="${IGNITION_CONFIG}",format=raw,readonly=on,serial=ignition,startup_policy=optional)
 
-  # Correct qemu perms
-  sudo chown qemu $IGNITION_CONFIG
-  sudo chown qemu $IMAGE
-
   # Setup the correct SELinux label to allow access to the config
   sudo chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
 
-  virt-install --connect="qemu:///system" --name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
+  sudo virt-install --connect="qemu:///system" --name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
           --os-variant="fedora-coreos-$STREAM" --import --graphics=none \
           --disk="size=${DISK_GB},backing_store=${IMAGE}" \
-          --network bridge=virbr0 "${IGNITION_DEVICE_ARG[@]}" &
+          --network bridge=virbr0 "${IGNITION_DEVICE_ARG[@]}" --quiet
 
 done

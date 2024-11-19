@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
-
 sshkey_list="$1"
+#sshkey_list="core_key kube_key"
 sskkey_pub_dir="$2"
 # == "./butane"
 

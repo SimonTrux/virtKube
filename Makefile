@@ -1,14 +1,9 @@
 # DATA
-vm_list := "fcos01 fcos02"
+vm_list := "fcos01"
 sshkey_list := "core_key kube_key"
 work_dir := "./butane"
 
-test:
-	@echo ${vm_list}
-	@echo ${sshkey_list}
-
 ## All section
-
 all: prereqs install status
 
 ## PREREQS SECTION
@@ -18,22 +13,21 @@ prereqs: pkgs butane
 pkgs:
 	./prereqs/packages.sh
 
-#os-image:
-#	./prereqs/os_image.sh
+os-image:
+	./prereqs/os_image.sh
 
 keys:
 	./prereqs/ssh_key_pair.sh ${sshkey_list} ${work_dir}
 
 butane: keys
-	./prereqs/butane.sh ${vm_list} ${sshkey_list} ${work_dir}
+	./prereqs/butane.sh ${vm_list} ${work_dir}
 
 
 ## INSTALL SECTION
 
-
 ## Need to split install from the setup
-install:
-	./install_vm.sh ${vm_list}
+install: butane
+	scripts/install_vm.sh ${vm_list}
 
 ## Actions
 start:
@@ -58,9 +52,7 @@ status:
 ## CLEANUP
 
 # Remove VMs, snapshots and storage.
-remove: shutdown
-	@echo Shutting down...
-	@sleep 12
+remove:
 	scripts/remove_all_storage.sh ${vm_list}
 
 # Clean working directory
