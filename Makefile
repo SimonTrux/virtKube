@@ -1,5 +1,6 @@
 # DATA
-vm_list := "fcos01"
+#m_list := "fcos01"
+vm_list := "test_alp1"
 sshkey_list := "core_key kube_key"
 work_dir := "./butane"
 
@@ -36,8 +37,9 @@ ansible: build-ansible
 ## INSTALL SECTION
 
 ## Need to split install from the setup
-install: butane
-	scripts/install_vm.sh ${vm_list}
+install: #butane
+	scripts/install_alp.sh ${vm_list}
+#scripts/install_vm.sh ${vm_list}
 
 ## Actions
 start:
